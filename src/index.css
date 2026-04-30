@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+:root {
+  --c-bg:           #F7F4EF;
+  --c-surface:      #FFFFFF;
+  --c-surface-2:    #F0ECE6;
+  --c-elevated:     #FFFFFF;
+  --c-gold:         #A0731A;
+  --c-gold-light:   #C9922A;
+  --c-gold-muted:   rgba(160, 115, 26, 0.08);
+  --c-gold-border:  rgba(160, 115, 26, 0.2);
+  --c-text:         #1A1612;
+  --c-text-2:       #5C5349;
+  --c-text-3:       #9A9189;
+  --c-text-4:       #C4BDB5;
+  --c-border:       rgba(0, 0, 0, 0.07);
+  --c-border-2:     rgba(0, 0, 0, 0.11);
+  --c-green:        #16A34A;
+  --c-red:          #DC2626;
+  --c-blue:         #2563EB;
+  --c-purple:       #7C3AED;
+  --c-amber:        #D97706;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D6CFC6; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #BFB8AE; }
+
+/* Global transition for interactive elements only */
+a, button { transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease; }
+
+/* Spin animation for refresh icon */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Card hover lift */
+.ev-card-hover {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.ev-card-hover:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.1) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+/* KPI card gold hover */
+.ev-kpi-hover:hover {
+  border-color: var(--c-gold-border) !important;
+  box-shadow: 0 0 0 1px var(--c-gold-border), 0 8px 24px rgba(0,0,0,0.08);
+}
+
+/* Table row hover */
+.ev-tr-hover:hover td {
+  background: rgba(0,0,0,0.018);
+}
+
+/* Sidebar nav item hover */
+.ev-nav-item:hover {
+  color: #3D2E1A !important;
+  background: rgba(0,0,0,0.04) !important;
+}
+
