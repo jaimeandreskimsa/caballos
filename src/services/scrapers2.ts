@@ -538,7 +538,7 @@ export async function equipeFetchShowResults(showId: string, countryCode = 'AR')
     level: '1.20m' as JumpingLevel,
     faults: 0,
     clear: false,
-    phase: 'Startlist',
+    phase: undefined,
     source: 'EQUIPE' as DataSource,
     importedAt: new Date().toISOString(),
   }));
@@ -785,7 +785,7 @@ export async function fdmFetchLots(remateId: string): Promise<DBSale[]> {
   const sireDamPattern = /(?:padre|sire)[:\s]*([A-Z][A-Z\s''\-]{2,40})/gi;
 
   const harasMatches = [...html.matchAll(harasPattern)];
-  const sireDamMatches = [...html.matchAll(sireDamPattern)];
+  void html.matchAll(sireDamPattern); // sireDamPattern reserved for future use
 
   let lotIdx = 0;
   let m: RegExpExecArray | null;

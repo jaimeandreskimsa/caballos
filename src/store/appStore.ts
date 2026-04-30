@@ -13,7 +13,7 @@ interface AppState {
 
   // DB sync state (not persisted — refreshed on load)
   syncProgress: SyncProgress | null;
-  dbStats: { totalHorses: number; totalResults: number; totalEvents: number; totalSales: number } | null;
+  dbStats: { totalHorses: number; totalResults: number; totalEvents: number; totalSales: number; lastSyncBySource: Record<string, string> } | null;
 
   login: () => void;
   logout: () => void;

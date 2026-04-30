@@ -112,14 +112,7 @@ function idbCount(db: IDBDatabase, store: string): Promise<number> {
   });
 }
 
-function idbDelete(db: IDBDatabase, store: string, key: IDBValidKey): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(store, 'readwrite');
-    const req = tx.objectStore(store).delete(key);
-    req.onsuccess = () => resolve();
-    req.onerror = () => reject(req.error);
-  });
-}
+// idbDelete removed (unused)
 
 // ─── Batch upsert ─────────────────────────────────────────────────────────────
 async function idbPutBatch<T>(db: IDBDatabase, store: string, records: T[]): Promise<void> {
@@ -127,7 +120,6 @@ async function idbPutBatch<T>(db: IDBDatabase, store: string, records: T[]): Pro
   return new Promise((resolve, reject) => {
     const tx = db.transaction(store, 'readwrite');
     const os = tx.objectStore(store);
-    let done = 0;
     tx.onerror = () => reject(tx.error);
     tx.oncomplete = () => resolve();
     for (const r of records) {
