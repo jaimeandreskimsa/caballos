@@ -1,14 +1,14 @@
 FROM node:22-alpine AS base
 WORKDIR /app
 
-# Install dependencies
-COPY package.json ./
+# Install dependencies (from server/package.json)
+COPY server/package.json ./
 RUN npm install
 
-# Copy source
-COPY . .
+# Copy server source
+COPY server/ .
 
-# Create drizzle dir if it doesn't exist (migrations generated at runtime)
+# Create drizzle dir if needed
 RUN mkdir -p drizzle
 
 # Build TypeScript
