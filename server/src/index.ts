@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { readFileSync } from 'node:fs';
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { Hono } from 'hono';
@@ -50,8 +51,13 @@ app.route('/api/meta', metaRoute);
 
 // ─── Serve frontend static files in production ───────────────────────────────
 if (process.env.NODE_ENV === 'production') {
+  // Serve static assets (js, css, images, etc.)
   app.use('/*', serveStatic({ root: './public' }));
-  app.get('/*', serveStatic({ path: './public/index.html' }));
+  // SPA fallback: all non-API routes → index.html
+  app.get('/*', (c) => {
+    const html = readFileSync('./public/index.html', 'utf-8');
+    return c.html(html);
+  });
 }
 
 // ─── Start ────────────────────────────────────────────────────────────────────

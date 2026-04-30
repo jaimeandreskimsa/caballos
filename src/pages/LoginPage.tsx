@@ -44,28 +44,226 @@ export default function LoginPage() {
     }, 900);
   }
 
+  if (isMobile) {
+    return (
+      <div style={{
+        position: 'fixed', inset: 0,
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+        overflow: 'hidden',
+      }}>
+        {/* ── FULL SCREEN PHOTO ── */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: `url(${HERO_IMAGE})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 35%',
+        }} />
+
+        {/* Subtle vignette — keeps photo visible */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.05) 38%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0.72) 100%)',
+        }} />
+
+        {/* ── TOP BRAND ── */}
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center',
+          paddingTop: 'calc(env(safe-area-inset-top, 44px) + 18px)',
+          gap: 8,
+        }}>
+          {/* Logo badge */}
+          <div style={{
+            width: 52, height: 52, borderRadius: 16,
+            background: 'rgba(255,255,255,0.18)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: '1.5px solid rgba(255,255,255,0.3)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 17, fontWeight: 900, color: '#FFFFFF',
+            letterSpacing: '-0.5px',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.2)',
+          }}>EV</div>
+          <div style={{ fontSize: 24, fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.6px', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>
+            EquiValue <span style={{ color: '#D4A843' }}>AI</span>
+          </div>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            background: 'rgba(212,168,67,0.18)',
+            border: '1px solid rgba(212,168,67,0.4)',
+            borderRadius: 999, padding: '4px 12px',
+          }}>
+            <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#D4A843' }} />
+            <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(212,168,67,1)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+              Show Jumping Intelligence
+            </span>
+          </div>
+        </div>
+
+        {/* ── GLASS FORM CARD ── */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 10,
+          background: 'rgba(8,8,12,0.52)',
+          backdropFilter: 'blur(40px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+          borderRadius: '28px 28px 0 0',
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderBottom: 'none',
+          boxShadow: '0 -1px 0 rgba(255,255,255,0.06), 0 -32px 80px rgba(0,0,0,0.45)',
+          padding: '20px 24px calc(env(safe-area-inset-bottom, 20px) + 24px)',
+        }}>
+          {/* Drag handle */}
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.22)', margin: '0 auto 22px' }} />
+
+          {/* Card header */}
+          <div style={{ marginBottom: 24 }}>
+            <h2 style={{ margin: '0 0 5px', fontSize: 24, fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.6px' }}>
+              Bienvenido de nuevo
+            </h2>
+            <p style={{ margin: 0, fontSize: 14, color: 'rgba(255,255,255,0.48)', lineHeight: 1.4 }}>
+              Ingresá tus credenciales para continuar
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {/* Usuario */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.55)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                Usuario
+              </label>
+              <input
+                type="text"
+                autoComplete="username"
+                placeholder="admin"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                style={{
+                  background: 'rgba(255,255,255,0.08)',
+                  border: '1.5px solid rgba(255,255,255,0.15)',
+                  borderRadius: 12, padding: '14px 16px',
+                  color: '#FFFFFF', fontSize: 16, outline: 'none',
+                  width: '100%', boxSizing: 'border-box',
+                  WebkitAppearance: 'none',
+                  transition: 'border-color 0.15s, background 0.15s',
+                }}
+                onFocus={(e) => { e.target.style.borderColor = 'rgba(212,168,67,0.7)'; e.target.style.background = 'rgba(255,255,255,0.13)'; }}
+                onBlur={(e) => { e.target.style.borderColor = 'rgba(255,255,255,0.15)'; e.target.style.background = 'rgba(255,255,255,0.08)'; }}
+              />
+            </div>
+
+            {/* Contraseña */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.55)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                Contraseña
+              </label>
+              <input
+                type="password"
+                autoComplete="current-password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{
+                  background: 'rgba(255,255,255,0.08)',
+                  border: '1.5px solid rgba(255,255,255,0.15)',
+                  borderRadius: 12, padding: '14px 16px',
+                  color: '#FFFFFF', fontSize: 16, outline: 'none',
+                  width: '100%', boxSizing: 'border-box',
+                  WebkitAppearance: 'none',
+                  transition: 'border-color 0.15s, background 0.15s',
+                }}
+                onFocus={(e) => { e.target.style.borderColor = 'rgba(212,168,67,0.7)'; e.target.style.background = 'rgba(255,255,255,0.13)'; }}
+                onBlur={(e) => { e.target.style.borderColor = 'rgba(255,255,255,0.15)'; e.target.style.background = 'rgba(255,255,255,0.08)'; }}
+              />
+            </div>
+
+            {/* Error */}
+            {error && (
+              <div style={{
+                background: 'rgba(220,38,38,0.15)', border: '1px solid rgba(220,38,38,0.35)',
+                borderRadius: 10, padding: '11px 14px',
+                color: '#FCA5A5', fontSize: 13,
+                display: 'flex', alignItems: 'center', gap: 8,
+              }}>
+                <span style={{ fontSize: 15 }}>⚠</span> {error}
+              </div>
+            )}
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                marginTop: 4, padding: '15px',
+                background: loading ? 'rgba(212,168,67,0.35)' : 'linear-gradient(135deg, #D4A843 0%, #E8C060 100%)',
+                border: 'none', borderRadius: 12,
+                color: loading ? 'rgba(255,255,255,0.5)' : '#0A0A0A',
+                fontSize: 16, fontWeight: 800,
+                cursor: loading ? 'not-allowed' : 'pointer',
+                letterSpacing: '0.01em',
+                boxShadow: loading ? 'none' : '0 4px 24px rgba(212,168,67,0.4)',
+                transition: 'all 0.15s',
+                WebkitTapHighlightColor: 'transparent',
+              }}
+            >
+              {loading ? '⟳ Verificando...' : 'Ingresar →'}
+            </button>
+          </form>
+
+          {/* Divider + Demo */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '20px 0 14px' }}>
+            <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.1)' }} />
+            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.08em', fontWeight: 600 }}>ACCESO DEMO</span>
+            <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.1)' }} />
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            {[
+              { user: 'demo', pass: 'demo', label: 'Demo' },
+              { user: 'admin', pass: 'equivalue2026', label: 'Admin' },
+            ].map(({ user, pass, label }) => (
+              <button
+                key={user}
+                type="button"
+                onClick={() => { setEmail(user); setPassword(pass); setError(''); }}
+                style={{
+                  flex: 1, padding: '11px',
+                  background: 'rgba(255,255,255,0.07)',
+                  border: '1.5px solid rgba(255,255,255,0.14)',
+                  borderRadius: 10, cursor: 'pointer',
+                  fontSize: 14, fontWeight: 600,
+                  color: 'rgba(255,255,255,0.65)',
+                  transition: 'all 0.15s',
+                  WebkitTapHighlightColor: 'transparent',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(212,168,67,0.6)'; e.currentTarget.style.color = '#D4A843'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{
       display: 'flex',
-      flexDirection: isMobile ? 'column' : 'row',
+      flexDirection: 'row',
       width: '100vw',
-      height: isMobile ? '100dvh' : undefined,
-      minHeight: isMobile ? undefined : '100vh',
+      minHeight: '100vh',
       overflow: 'hidden',
-      position: isMobile ? 'relative' : undefined,
       fontFamily: 'system-ui, -apple-system, sans-serif',
     }}>
 
-      {/* ── HERO PANEL — full left on desktop | full screen background on mobile ── */}
+      {/* ── HERO PANEL — full left on desktop ── */}
       <div style={{
-        ...(isMobile ? {
-          position: 'absolute',
-          inset: 0,
-        } : {
-          flex: '0 0 58%',
-          height: '100vh',
-          position: 'relative',
-        }),
+        flex: '0 0 58%',
+        height: '100vh',
+        position: 'relative',
         overflow: 'hidden',
         backgroundImage: `url(${HERO_IMAGE})`,
         backgroundSize: 'cover',
@@ -79,55 +277,19 @@ export default function LoginPage() {
         }} />
         <div style={{
           position: 'absolute', inset: 0, zIndex: 2,
-          background: isMobile
-            ? 'linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.75) 100%)'
-            : 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 45%)',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 45%)',
         }} />
-        {!isMobile && (
-          <div style={{
-            position: 'absolute', top: 0, right: 0, bottom: 0, width: '30%', zIndex: 2,
-            background: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 100%)',
-          }} />
-        )}
+        <div style={{
+          position: 'absolute', top: 0, right: 0, bottom: 0, width: '30%', zIndex: 2,
+          background: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 100%)',
+        }} />
 
         {/* Top-left brand — desktop */}
-        {!isMobile && (
-          <div style={{ position: 'absolute', top: 36, left: 40, zIndex: 3 }}>
-            <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: '-0.3px', color: 'rgba(255,255,255,0.92)' }}>
-              EquiValue <span style={{ color: '#D4A843', fontWeight: 900 }}>AI</span>
-            </span>
-          </div>
-        )}
-
-        {/* Mobile: top brand overlay */}
-        {isMobile && (
-          <div style={{
-            position: 'absolute', top: 0, left: 0, right: 0, zIndex: 3,
-            display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'flex-start',
-            paddingTop: 'env(safe-area-inset-top, 52px)',
-            paddingBottom: 12,
-            gap: 6,
-          }}>
-            <div style={{
-              marginTop: 20,
-              width: 44, height: 44, borderRadius: 12,
-              background: 'rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
-              display: 'flex', alignItems: 'center',
-              justifyContent: 'center', fontSize: 16, fontWeight: 900, color: '#FFFFFF',
-              marginBottom: 4,
-              border: '1px solid rgba(255,255,255,0.2)',
-            }}>EV</div>
-            <div style={{ fontSize: 22, fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.5px' }}>
-              EquiValue <span style={{ color: '#D4A843' }}>AI</span>
-            </div>
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-              Show Jumping Intelligence
-            </div>
-          </div>
-        )}
+        <div style={{ position: 'absolute', top: 36, left: 40, zIndex: 3 }}>
+          <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: '-0.3px', color: 'rgba(255,255,255,0.92)' }}>
+            EquiValue <span style={{ color: '#D4A843', fontWeight: 900 }}>AI</span>
+          </span>
+        </div>
 
         {/* Desktop: bottom hero text */}
         {!isMobile && (

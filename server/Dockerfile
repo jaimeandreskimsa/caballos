@@ -23,9 +23,7 @@ COPY --from=base /app/dist ./dist
 COPY --from=base /app/node_modules ./node_modules
 COPY --from=base /app/package.json ./package.json
 COPY --from=base /app/drizzle ./drizzle
-
-# Copy built frontend (if exists)
-RUN mkdir -p public
+COPY --from=base /app/public ./public
 
 EXPOSE 3000
 CMD ["node", "dist/index.js"]
