@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAppStore } from '../store/appStore';
 import { BarChart3, RefreshCw, Database, Globe, Play, CheckCircle, AlertCircle, Clock } from 'lucide-react';
-import { runSync, getDBStats } from '../services/sync';
+import { runSync } from '../services/sync';
+import { serverGetDBStats } from '../services/serverDB';
 import type { SyncProgress } from '../services/sync';
 
 export default function DataPage() {
@@ -14,10 +15,10 @@ export default function DataPage() {
     return acc;
   }, {});
 
-  // Load DB stats on mount
+  // Load DB stats on mount (from server/PostgreSQL)
   useEffect(() => {
-    getDBStats().then(s => {
-      setDbStats(s);
+    serverGetDBStats().then(s => {
+      setDbStats({ ...s, lastSyncBySource: {} });
     }).catch(() => {});
   }, [setDbStats]);
 
@@ -29,7 +30,7 @@ export default function DataPage() {
       setSyncProgress(p);
     }, force);
     // Refresh stats after sync
-    getDBStats().then(s => setDbStats(s)).catch(() => {});
+    serverGetDBStats().then(s => setDbStats({ ...s, lastSyncBySource: {} })).catch(() => {});
     setIsRunning(false);
   };
 
