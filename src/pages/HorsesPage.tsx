@@ -49,10 +49,10 @@ export default function HorsesPage() {
   const totalPages = Math.ceil(total / LIMIT);
 
   return (
-    <div style={{ padding: '32px', background: '#F6F9FC', minHeight: '100vh' }}>
+    <div className="page-pad" style={{ padding: '32px', background: '#F6F9FC', minHeight: '100vh' }}>
       {/* Header */}
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ margin: '0 0 4px', fontSize: 24, fontWeight: 800, color: '#0A2540', letterSpacing: '-0.4px' }}>Caballos</h1>
+        <h1 className="page-h1" style={{ margin: '0 0 4px', fontSize: 24, fontWeight: 800, color: '#0A2540', letterSpacing: '-0.4px' }}>Caballos</h1>
         <p style={{ margin: 0, color: '#697386', fontSize: 14 }}>
           {total > 0 ? `${total.toLocaleString('es-AR')} caballos en la base de datos` : loading ? 'Cargando…' : '0 caballos'}
         </p>
@@ -88,7 +88,8 @@ export default function HorsesPage() {
       )}
 
       {/* Table */}
-      <div style={{ background: '#FFFFFF', border: '1px solid #E3E8EF', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+      <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+      <div style={{ background: '#FFFFFF', border: '1px solid #E3E8EF', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', minWidth: 560 }}>
         {/* Header */}
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 80px 110px 1fr 1fr 1fr', padding: '9px 18px', background: '#F8FAFC', borderBottom: '1px solid #E3E8EF' }}>
           {['Nombre', 'País', 'Género', 'Padre', 'Madre', 'Studbook'].map((h) => (
@@ -127,6 +128,7 @@ export default function HorsesPage() {
           </div>
         ))}
       </div>
+      </div>{/* end scroll wrapper */}
 
       {/* Pagination */}
       {totalPages > 1 && (

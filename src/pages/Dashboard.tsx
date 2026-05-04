@@ -35,11 +35,11 @@ export default function Dashboard() {
     : 0;
 
   return (
-    <div style={{ padding: '32px', background: '#F6F9FC', minHeight: '100vh' }}>
+    <div className="page-pad" style={{ padding: '32px', background: '#F6F9FC', minHeight: '100vh' }}>
 
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
-        <h1 style={{ margin: '0 0 4px', fontSize: 24, fontWeight: 800, color: '#0A2540', letterSpacing: '-0.4px' }}>
+        <h1 className="page-h1" style={{ margin: '0 0 4px', fontSize: 24, fontWeight: 800, color: '#0A2540', letterSpacing: '-0.4px' }}>
           Panel de Control
         </h1>
         <p style={{ margin: 0, color: '#697386', fontSize: 14 }}>
@@ -48,14 +48,14 @@ export default function Dashboard() {
       </div>
 
       {/* KPI cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 16, marginBottom: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 16, marginBottom: 24 }}>
         <KpiCard icon={<Trophy size={16} />}    label="Caballos en BD"  value={fmtNum(dbStats?.totalHorses ?? horses.length)} accent="#635BFF" delta="+1821" />
         <KpiCard icon={<BarChart3 size={16} />}  label="Valoraciones"    value={fmtNum(valuations.length)}                     accent="#30B57C" />
         <KpiCard icon={<Database size={16} />}   label="Resultados en BD" value={fmtNum(dbStats?.totalResults ?? results.length)} accent="#3B82F6" />
         <KpiCard icon={<TrendingUp size={16} />} label="Valor promedio"  value={avgValue > 0 ? fmt(avgValue) : '—'}            accent="#F59E0B" />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 200px', gap: 16, alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 16, alignItems: 'start' }}>
         {/* Chart */}
         {chartData.length > 0 ? (
           <div style={{ background: '#FFFFFF', border: '1px solid #E3E8EF', borderRadius: 12, padding: '22px 22px 14px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
@@ -95,7 +95,7 @@ export default function Dashboard() {
         )}
 
         {/* Side stats */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
           <StatBox label="Eventos" value={fmtNum(dbStats?.totalEvents ?? 0)} emoji="🏟️" />
           <StatBox label="Ventas" value={fmtNum(dbStats?.totalSales ?? 0)} emoji="🔨" />
           <StatBox label="Score prom." emoji="⭐" value={

@@ -4,6 +4,7 @@ import { Component, type ReactNode, useEffect, useState } from 'react';
 import { useAppStore } from './store/appStore';
 import LoginPage from './pages/LoginPage';
 import { Sidebar } from './components/Sidebar';
+import { BottomNav } from './components/BottomNav';
 import Dashboard from './pages/Dashboard';
 import HorsesPage from './pages/HorsesPage';
 import ValuationPage from './pages/ValuationPage';
@@ -65,8 +66,8 @@ function PWAInstallBanner() {
 
   return (
     <div style={{
-      position: 'fixed', bottom: 20, left: '50%', transform: 'translateX(-50%)',
-      background: '#FFFFFF', border: '1px solid rgba(0,0,0,0.1)',
+      position: 'fixed', bottom: 'calc(68px + env(safe-area-inset-bottom))', left: '50%', transform: 'translateX(-50%)',
+      background: '#FFFFFF', border: '1px solid #E3E8EF',
       borderRadius: 14, padding: '14px 18px',
       display: 'flex', alignItems: 'center', gap: 12,
       boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)',
@@ -74,7 +75,7 @@ function PWAInstallBanner() {
     }}>
       <div style={{
         width: 38, height: 38, borderRadius: 10, flexShrink: 0,
-        background: 'linear-gradient(135deg, #C9922A, #7A4F10)',
+        background: 'linear-gradient(135deg, #635BFF, #7C74FF)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         fontSize: 22,
       }}>♞</div>
@@ -83,7 +84,7 @@ function PWAInstallBanner() {
         <div style={{ fontSize: 11, color: '#9A9189', marginTop: 1 }}>Accedé desde tu pantalla de inicio</div>
       </div>
       <button onClick={install} style={{
-        background: '#A0731A', color: '#fff', border: 'none',
+        background: '#635BFF', color: '#fff', border: 'none',
         borderRadius: 8, padding: '7px 13px',
         fontSize: 12, fontWeight: 600, cursor: 'pointer',
         display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0,
@@ -108,8 +109,8 @@ export default function App() {
       <QueryClientProvider client={qc}>
         <BrowserRouter>
           <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--c-bg)' }}>
-            <Sidebar />
-            <main style={{ flex: 1, overflowY: 'auto', minHeight: '100vh', background: 'var(--c-bg)' }}>
+            <div className="sidebar-desktop"><Sidebar /></div>
+            <main className="main-content" style={{ flex: 1, overflowY: 'auto', minHeight: '100vh', background: 'var(--c-bg)' }}>
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/horses" element={<HorsesPage />} />
@@ -120,6 +121,7 @@ export default function App() {
               </Routes>
             </main>
           </div>
+          <BottomNav />
           <PWAInstallBanner />
         </BrowserRouter>
       </QueryClientProvider>

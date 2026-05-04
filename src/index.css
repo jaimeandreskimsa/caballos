@@ -201,3 +201,94 @@ a, button { transition: all 0.15s cubic-bezier(0.4,0,0.2,1); }
   letter-spacing: 0.02em;
 }
 
+/* ────────────────────────────────
+   RESPONSIVE / MOBILE
+──────────────────────────────── */
+
+/* Hide sidebar on mobile, show bottom nav */
+@media (max-width: 768px) {
+  .sidebar-desktop { display: none !important; }
+  .bottom-nav-mobile { display: flex !important; }
+
+  /* Content area gets bottom padding for the nav bar */
+  .main-content {
+    padding-bottom: 72px !important;
+  }
+
+  /* Tighter page padding on small screens */
+  .page-pad {
+    padding: 20px 16px !important;
+  }
+
+  /* Smaller headings */
+  .page-h1 {
+    font-size: 20px !important;
+  }
+
+  /* Cards stack to 1 column */
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Keep bottom nav hidden on desktop */
+.bottom-nav-mobile {
+  display: none;
+}
+
+/* ── Bottom nav styles ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #FFFFFF;
+  border-top: 1px solid #E3E8EF;
+  display: flex;
+  align-items: stretch;
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -4px 16px rgba(10,37,64,0.06);
+}
+
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px 10px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #A3ACBA;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  gap: 4px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  transition: color 0.15s ease;
+  position: relative;
+}
+
+.bottom-nav-item.active {
+  color: #635BFF;
+}
+
+.bottom-nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  background: #635BFF;
+  border-radius: 0 0 3px 3px;
+}
+
+.bottom-nav-item:not(.active):active {
+  color: #635BFF;
+  background: rgba(99,91,255,0.04);
+}
+

@@ -101,10 +101,10 @@ export default function ValuationPage() {
   };
 
   return (
-    <div style={{ padding: '32px', maxWidth: 920, background: '#F6F9FC', minHeight: '100vh' }}>
+    <div className="page-pad" style={{ padding: '32px', maxWidth: 920, background: '#F6F9FC', minHeight: '100vh' }}>
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
-        <h1 style={{ margin: '0 0 4px', fontSize: 24, fontWeight: 800, color: '#0A2540', letterSpacing: '-0.4px' }}>
+        <h1 className="page-h1" style={{ margin: '0 0 4px', fontSize: 24, fontWeight: 800, color: '#0A2540', letterSpacing: '-0.4px' }}>
           Valoración AI
         </h1>
         <p style={{ margin: 0, color: '#697386', fontSize: 14 }}>

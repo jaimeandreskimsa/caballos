@@ -48,11 +48,11 @@ export default function DataPage() {
     : 0;
 
   return (
-    <div style={{ padding: '32px', maxWidth: 980, background: '#F6F9FC', minHeight: '100vh' }}>
+    <div className="page-pad" style={{ padding: '32px', maxWidth: 980, background: '#F6F9FC', minHeight: '100vh' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 28, gap: 20, flexWrap: 'wrap' }}>
         <div>
-          <h1 style={{ margin: '0 0 4px', fontSize: 24, fontWeight: 800, color: '#0A2540', letterSpacing: '-0.4px' }}>Datos &amp; Fuentes</h1>
+          <h1 className="page-h1" style={{ margin: '0 0 4px', fontSize: 24, fontWeight: 800, color: '#0A2540', letterSpacing: '-0.4px' }}>Datos &amp; Fuentes</h1>
           <p style={{ margin: 0, color: '#697386', fontSize: 14 }}>FEI · Equipe · FEDECUARG · CBH Brasil · Subastas argentinas</p>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
