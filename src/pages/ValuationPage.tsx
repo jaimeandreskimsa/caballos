@@ -16,7 +16,7 @@ export default function ValuationPage() {
   const [searchQ, setSearchQ] = useState('');
   const [searchResults, setSearchResults] = useState<DBHorse[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
-  const [selectedDBHorse, setSelectedDBHorse] = useState<DBHorse | null>(null);
+  const [, setSelectedDBHorse] = useState<DBHorse | null>(null);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleSearchChange = (val: string) => {
