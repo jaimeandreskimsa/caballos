@@ -7,6 +7,7 @@ import { Sidebar } from './components/Sidebar';
 import { BottomNav } from './components/BottomNav';
 import Dashboard from './pages/Dashboard';
 import HorsesPage from './pages/HorsesPage';
+import HorseDetailPage from './pages/HorseDetailPage';
 import ValuationPage from './pages/ValuationPage';
 import SearchPage from './pages/SearchPage';
 import DataPage from './pages/DataPage';
@@ -114,6 +115,7 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/horses" element={<HorsesPage />} />
+                <Route path="/horses/:id" element={<HorseDetailPage />} />
                 <Route path="/valuation" element={<ValuationPage />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/data" element={<DataPage />} />
