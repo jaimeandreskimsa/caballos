@@ -1,14 +1,11 @@
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, BarChart3, Database, Settings } from 'lucide-react';
 
-function HorseHeadIcon({ size = 20, strokeWidth = 1.8 }: { size?: number; strokeWidth?: number }) {
+function HorseHeadIcon({ size = 20 }: { size?: number; strokeWidth?: number }) {
+  // Full galloping horse silhouette path (viewBox 0 0 64 64)
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
-      {/* Horse head silhouette as path */}
-      <path d="M5 20 C5 20 5 16 7 14 C8 13 8 11 7 10 C6 9 6 7 8 6 C10 5 11 4 13 4 C15 4 17 5 18 7 C19 9 19 11 18 13 C17 14 16 14 16 16 L16 20" />
-      <path d="M16 16 C16 16 14 15 12 16 C10 17 8 17 7 16" />
-      <circle cx="15" cy="8" r="0.8" fill="currentColor" stroke="none" />
-      <path d="M13 4 C13 4 14 2 16 2 C16 2 15 4 15 5" />
+    <svg width={size} height={size} viewBox="0 0 64 64" fill="currentColor" aria-hidden="true">
+      <path d="M58 6c-1-2-3-3-5-2l-4 2c-1-2-3-3-5-2l-3 1c-1-2-4-3-6-1l-2 2c-2-1-5 0-6 2l-1 2c-3 1-5 3-5 6v3l-4 4-2 1H9c-2 0-3 1-3 3s1 3 3 3h5l-3 6c-1 2 0 4 2 5s4 0 5-2l4-9h2l-2 10c0 2 1 4 3 4s4-1 4-3l2-11 3-1v15c0 2 2 4 4 4s4-2 4-4V29c2-1 4-3 4-6v-1l4-3c2-1 3-4 2-6l-1-2 3-1c2-1 3-3 2-5l1-1c1-2 1-4-1-5 0 0 3 0 4-2l1-1c1-2 0-4-2-5zM31 18l-1 2-2-1 1-2 2 1zm3-4l-1 2-2-1 1-2 2 1zm4-3l-1 2-2-1 1-2 2 1z"/>
     </svg>
   );
 }
