@@ -13,6 +13,7 @@ import resultsRoute from './routes/results.js';
 import eventsRoute from './routes/events.js';
 import salesRoute from './routes/sales.js';
 import metaRoute from './routes/meta.js';
+import importRoute from './routes/import.js';
 
 const app = new Hono();
 
@@ -48,6 +49,7 @@ app.route('/api/results', resultsRoute);
 app.route('/api/events', eventsRoute);
 app.route('/api/sales', salesRoute);
 app.route('/api/meta', metaRoute);
+app.route('/api/import', importRoute);
 
 // ─── Serve frontend static files in production ───────────────────────────────
 if (process.env.NODE_ENV === 'production') {

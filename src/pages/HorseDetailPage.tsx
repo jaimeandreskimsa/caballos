@@ -34,12 +34,12 @@ function StatCard({ label, value, accent }: { label: string; value: string | num
     <div style={{
       background: accent ? 'rgba(99,91,255,0.06)' : '#FFFFFF',
       border: `1px solid ${accent ? 'rgba(99,91,255,0.2)' : '#E3E8EF'}`,
-      borderRadius: 12, padding: '16px 20px', textAlign: 'center',
+      borderRadius: 12, padding: '14px 8px', textAlign: 'center',
     }}>
-      <div style={{ fontSize: 28, fontWeight: 800, color: accent ? '#635BFF' : '#0A2540', letterSpacing: '-0.5px' }}>
+      <div style={{ fontSize: 26, fontWeight: 800, color: accent ? '#635BFF' : '#0A2540', letterSpacing: '-0.5px', lineHeight: 1.1 }}>
         {value}
       </div>
-      <div style={{ fontSize: 12, color: '#0A2540', fontWeight: 700, marginTop: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+      <div style={{ fontSize: 10, color: '#0A2540', fontWeight: 700, marginTop: 4, textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: 1.3 }}>
         {label}
       </div>
     </div>
@@ -88,10 +88,26 @@ export default function HorseDetailPage() {
   const age = horse.birthYear ? new Date().getFullYear() - horse.birthYear : null;
 
   return (
-    <div style={{ background: '#F6F9FC', minHeight: '100vh', padding: '0 0 48px' }}>
+    <div style={{ background: '#F6F9FC', minHeight: '100vh', padding: '0 0 80px' }}>
+
+      {/* ── responsive styles ── */}
+      <style>{`
+        .hd-topbar { padding: 0 24px; }
+        .hd-body   { max-width: 1100px; margin: 0 auto; padding: 24px 16px 0; }
+        .hd-hero   { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+        .hd-hero h1 { font-size: 24px; }
+        .hd-grid   { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        .hd-stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        @media (min-width: 700px) {
+          .hd-topbar { padding: 0 32px; }
+          .hd-body   { padding: 32px 24px 0; }
+          .hd-hero h1 { font-size: 30px; }
+          .hd-grid   { grid-template-columns: minmax(0,340px) 1fr; }
+        }
+      `}</style>
 
       {/* ── Top bar ── */}
-      <div style={{ background: '#FFFFFF', borderBottom: '1px solid #E3E8EF', padding: '0 32px', height: 56, display: 'flex', alignItems: 'center', gap: 16 }}>
+      <div className="hd-topbar" style={{ background: '#FFFFFF', borderBottom: '1px solid #E3E8EF', height: 56, display: 'flex', alignItems: 'center', gap: 16 }}>
         <button
           onClick={() => navigate('/horses')}
           style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', color: '#697386', fontWeight: 600, fontSize: 14, padding: '6px 0' }}
@@ -99,50 +115,49 @@ export default function HorseDetailPage() {
           <ArrowLeft size={16} /> Caballos
         </button>
         <span style={{ color: '#E3E8EF' }}>/</span>
-        <span style={{ fontSize: 14, fontWeight: 700, color: '#0A2540' }}>{horse.name}</span>
+        <span style={{ fontSize: 14, fontWeight: 700, color: '#0A2540', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{horse.name}</span>
       </div>
 
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px 0' }}>
+      <div className="hd-body">
 
         {/* ── Hero header ── */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 20, marginBottom: 32, flexWrap: 'wrap' }}>
-          {/* Avatar */}
+        <div className="hd-hero">
           <div style={{
-            width: 72, height: 72, borderRadius: 18, flexShrink: 0,
+            width: 64, height: 64, borderRadius: 16, flexShrink: 0,
             background: 'linear-gradient(135deg, #635BFF 0%, #7C74FF 100%)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 38, fontFamily: 'serif', boxShadow: '0 4px 16px rgba(99,91,255,0.25)',
+            fontSize: 34, fontFamily: 'serif', boxShadow: '0 4px 16px rgba(99,91,255,0.25)',
           }}>
             ♞
           </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 10 }}>
-              <h1 style={{ margin: 0, fontSize: 30, fontWeight: 900, color: '#0A2540', letterSpacing: '-0.5px' }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 10 }}>
+              <h1 className="hd-hero" style={{ margin: 0, fontWeight: 900, color: '#0A2540', letterSpacing: '-0.5px' }}>
                 {horse.name}
               </h1>
               {horse.feiId && (
                 <a
                   href={`https://www.fei.org/horse/${horse.feiId}/results`}
                   target="_blank" rel="noreferrer"
-                  style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, fontWeight: 700, color: '#635BFF', textDecoration: 'none', background: 'rgba(99,91,255,0.08)', borderRadius: 8, padding: '4px 10px' }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, fontWeight: 700, color: '#635BFF', textDecoration: 'none', background: 'rgba(99,91,255,0.08)', borderRadius: 8, padding: '4px 10px', flexShrink: 0 }}
                 >
                   FEI <ExternalLink size={12} />
                 </a>
               )}
             </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {horse.countryCode && <Chip>{flag(horse.countryCode)} {horse.countryCode}</Chip>}
               {horse.feiId && <Chip>{horse.feiId}</Chip>}
               {horse.birthYear && <Chip>🗓 {horse.birthYear}{age ? ` · ${age} años` : ''}</Chip>}
               {horse.gender && <Chip color={GENDER_COLOR[horse.gender]}>{genderLabel(horse.gender)}</Chip>}
-              {horse.breed && <Chip>{horse.breed}</Chip>}
+              {horse.studbook && <Chip>{horse.studbook}</Chip>}
               {horse.color && <Chip>🎨 {horse.color}</Chip>}
             </div>
           </div>
         </div>
 
-        {/* ── Two-column layout ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,340px) 1fr', gap: 24, alignItems: 'start' }}>
+        {/* ── Two-column layout (stacks on mobile) ── */}
+        <div className="hd-grid" style={{ alignItems: 'start' }}>
 
           {/* ── LEFT column ── */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -150,14 +165,14 @@ export default function HorseDetailPage() {
             {/* Stats */}
             <div style={{ background: '#FFFFFF', border: '1px solid #E3E8EF', borderRadius: 16, padding: 20 }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: '#4A5568', letterSpacing: '0.07em', textTransform: 'uppercase', marginBottom: 14 }}>Estadísticas</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+              <div className="hd-stats-grid">
                 <StatCard label="Starts" value={results.length} />
                 <StatCard label="Victorias" value={wins} accent={wins > 0} />
                 <StatCard label="Top 3" value={top3} />
               </div>
             </div>
 
-            {/* Pedigree */}
+            {/* Pedigree / Info */}
             {(horse.sire || horse.dam || horse.damSire || horse.currentRider || horse.owner || horse.haras) && (
               <div style={{ background: '#FFFFFF', border: '1px solid #E3E8EF', borderRadius: 16, padding: 20 }}>
                 <div style={{ fontSize: 11, fontWeight: 700, color: '#4A5568', letterSpacing: '0.07em', textTransform: 'uppercase', marginBottom: 14 }}>Información</div>
@@ -175,7 +190,7 @@ export default function HorseDetailPage() {
 
           {/* ── RIGHT column: Results ── */}
           <div style={{ background: '#FFFFFF', border: '1px solid #E3E8EF', borderRadius: 16, overflow: 'hidden' }}>
-            <div style={{ padding: '18px 24px 14px', borderBottom: '1px solid #F0F4F8', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ padding: '16px 20px 12px', borderBottom: '1px solid #F0F4F8', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
               <div style={{ fontSize: 14, fontWeight: 800, color: '#0A2540' }}>Historial de competencias</div>
               {results.length > 0 && (
                 <div style={{ fontSize: 12, color: '#697386' }}>
@@ -189,7 +204,7 @@ export default function HorseDetailPage() {
                 Sin resultados registrados
               </div>
             ) : (
-              <div style={{ padding: '8px 16px 16px' }}>
+              <div style={{ padding: '8px 12px 12px' }}>
                 {results.map((r) => {
                   const isWin = r.placement === 1;
                   const isTop3 = r.placement != null && r.placement <= 3;
@@ -197,7 +212,7 @@ export default function HorseDetailPage() {
                     <div
                       key={r.id}
                       style={{
-                        display: 'flex', alignItems: 'center', gap: 12, padding: '10px 10px',
+                        display: 'flex', alignItems: 'flex-start', gap: 10, padding: '10px 8px',
                         borderRadius: 10, marginBottom: 2,
                         background: isWin ? 'rgba(99,91,255,0.04)' : 'transparent',
                         border: `1px solid ${isWin ? 'rgba(99,91,255,0.14)' : 'transparent'}`,
@@ -205,39 +220,39 @@ export default function HorseDetailPage() {
                     >
                       {/* Position badge */}
                       <div style={{
-                        width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+                        width: 34, height: 34, borderRadius: 9, flexShrink: 0,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         background: isWin ? '#635BFF' : isTop3 ? 'rgba(48,181,124,0.12)' : '#F0F4F8',
                         color: isWin ? '#fff' : isTop3 ? '#30B57C' : '#A3ACBA',
                         fontSize: 13, fontWeight: 800,
                       }}>
-                        {isWin ? <Trophy size={15} /> : (r.placement ?? '—')}
+                        {isWin ? <Trophy size={14} /> : (r.placement ?? '—')}
                       </div>
 
                       {/* Info */}
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                          <span style={{ fontSize: 14, fontWeight: 700, color: '#0A2540' }}>{r.eventName}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 3 }}>
+                          <span style={{ fontSize: 13, fontWeight: 700, color: '#0A2540', wordBreak: 'break-word' }}>{r.eventName}</span>
                           <span style={{
-                            fontSize: 11, background: '#E8EDF3', color: '#2D3748',
-                            borderRadius: 5, padding: '1px 7px', fontWeight: 700,
+                            fontSize: 10, background: '#E8EDF3', color: '#2D3748',
+                            borderRadius: 5, padding: '1px 6px', fontWeight: 700, flexShrink: 0,
                           }}>{r.level}</span>
-                          {r.category && (
-                            <span style={{ fontSize: 12, color: '#4A5568', fontWeight: 500 }}>{r.category}</span>
-                          )}
                         </div>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 3 }}>
-                          <span style={{ fontSize: 12, color: '#4A5568', display: 'flex', alignItems: 'center', gap: 4 }}>
-                            <Calendar size={11} />{r.eventDate}
+                        {r.category && (
+                          <div style={{ fontSize: 12, color: '#4A5568', marginBottom: 3 }}>{r.category}</div>
+                        )}
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2px 10px' }}>
+                          <span style={{ fontSize: 11, color: '#697386', display: 'flex', alignItems: 'center', gap: 3 }}>
+                            <Calendar size={10} />{r.eventDate}
                           </span>
                           {r.riderName && (
-                            <span style={{ fontSize: 12, color: '#4A5568', display: 'flex', alignItems: 'center', gap: 4 }}>
-                              <User size={11} />{r.riderName}
+                            <span style={{ fontSize: 11, color: '#697386', display: 'flex', alignItems: 'center', gap: 3 }}>
+                              <User size={10} />{r.riderName}
                             </span>
                           )}
                           {r.eventCountry && (
-                            <span style={{ fontSize: 12, color: '#4A5568', display: 'flex', alignItems: 'center', gap: 4 }}>
-                              <MapPin size={11} />{flag(r.eventCountry)} {r.eventCountry}
+                            <span style={{ fontSize: 11, color: '#697386', display: 'flex', alignItems: 'center', gap: 3 }}>
+                              <MapPin size={10} />{flag(r.eventCountry)} {r.eventCountry}
                             </span>
                           )}
                         </div>

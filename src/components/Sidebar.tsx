@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
-  LayoutDashboard, Trophy, Search, BarChart3, Database, Settings,
+  LayoutDashboard, Trophy, Download, BarChart3, Database, Settings,
   LogOut, ChevronLeft, ChevronRight, Zap,
 } from 'lucide-react';
 import { useAppStore } from '../store/appStore';
@@ -10,7 +10,7 @@ const NAV = [
   { to: '/',          label: 'Dashboard',   icon: LayoutDashboard },
   { to: '/horses',    label: 'Caballos',    icon: Trophy },
   { to: '/valuation', label: 'Valoración',  icon: BarChart3 },
-  { to: '/search',    label: 'Buscar FEI',  icon: Search },
+  { to: '/import',    label: 'Importar FEI',icon: Download },
   { to: '/data',      label: 'Datos',       icon: Database },
   { to: '/settings',  label: 'Ajustes',     icon: Settings },
 ];

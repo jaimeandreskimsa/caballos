@@ -9,9 +9,9 @@ import Dashboard from './pages/Dashboard';
 import HorsesPage from './pages/HorsesPage';
 import HorseDetailPage from './pages/HorseDetailPage';
 import ValuationPage from './pages/ValuationPage';
-import SearchPage from './pages/SearchPage';
 import DataPage from './pages/DataPage';
 import SettingsPage from './pages/SettingsPage';
+import ImportPage from './pages/ImportPage';
 import { Download, X } from 'lucide-react';
 
 const qc = new QueryClient();
@@ -117,8 +117,8 @@ export default function App() {
                 <Route path="/horses" element={<HorsesPage />} />
                 <Route path="/horses/:id" element={<HorseDetailPage />} />
                 <Route path="/valuation" element={<ValuationPage />} />
-                <Route path="/search" element={<SearchPage />} />
                 <Route path="/data" element={<DataPage />} />
+                <Route path="/import" element={<ImportPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
               </Routes>
             </main>
