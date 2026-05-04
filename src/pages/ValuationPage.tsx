@@ -106,38 +106,41 @@ export default function ValuationPage() {
     setLoading(false);
   };
 
-  if (false) {  // removed old empty-state guard — search handles it
-    return null;
-  }
-
   return (
-    <div style={{ padding: '32px', maxWidth: 900 }}>
-      <h1 style={{ margin: '0 0 6px', fontSize: 24, fontWeight: 800, color: '#111111', letterSpacing: '-0.5px' }}>Valoración</h1>
-      <p style={{ margin: '0 0 28px', color: '#888888', fontSize: 14 }}>Genera una valoración AI basada en performance, linaje y mercado.</p>
+    <div style={{ padding: '28px 32px', maxWidth: 920, background: 'var(--c-bg)', minHeight: '100vh' }}>
+      {/* Header */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+          <span style={{ fontSize: 28 }} className="ev-horse-icon">🏆</span>
+          <h1 style={{
+            margin: 0, fontSize: 26, fontWeight: 800, letterSpacing: '-0.5px',
+            background: 'linear-gradient(135deg, #F0EDE8 0%, #C9972C 100%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+          }}>Valoración AI</h1>
+        </div>
+        <p style={{ margin: 0, color: 'rgba(160,143,130,0.6)', fontSize: 14 }}>
+          Genera una valoración basada en performance, linaje y mercado ecuestre.
+        </p>
+      </div>
 
       {/* Horse search */}
       <div style={{ marginBottom: 24, position: 'relative' }}>
         <div style={{ position: 'relative' }}>
-          <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#AAAAAA', pointerEvents: 'none' }} />
+          <Search size={15} style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', color: 'rgba(201,151,44,0.5)', pointerEvents: 'none' }} />
           <input
             value={searchQ}
             onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="Buscar caballo por nombre…"
-            style={{
-              width: '100%', paddingLeft: 36, paddingRight: horse ? 200 : 12,
-              paddingTop: 12, paddingBottom: 12,
-              border: '1px solid #E0E0E0', borderRadius: 10,
-              fontSize: 14, color: '#111111', background: '#FFFFFF',
-              outline: 'none', boxSizing: 'border-box',
-            }}
+            placeholder="🐎 Buscar caballo por nombre en la base de datos…"
+            className="ev-input"
+            style={{ width: '100%', paddingLeft: 38, paddingTop: 13, paddingBottom: 13, paddingRight: horse && !searchQ ? 180 : 14, fontSize: 14.5, boxSizing: 'border-box' }}
           />
           {horse && !searchQ && (
             <div style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: '#111111', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {horse.name}
+              <span style={{ fontSize: 13, fontWeight: 700, color: '#F0B429', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                ✓ {horse.name}
               </span>
-              <button onClick={() => { selectHorse(null); setSelectedDBHorse(null); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#AAAAAA', padding: 2 }}>
-                <X size={14} />
+              <button onClick={() => { selectHorse(null); setSelectedDBHorse(null); }} style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 6, cursor: 'pointer', color: '#EF4444', padding: '2px 6px', lineHeight: 0 }}>
+                <X size={12} />
               </button>
             </div>
           )}
@@ -147,28 +150,29 @@ export default function ValuationPage() {
         {searchQ && (
           <div style={{
             position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50,
-            background: '#FFFFFF', border: '1px solid #E0E0E0', borderRadius: 10,
-            boxShadow: '0 4px 16px rgba(0,0,0,0.08)', marginTop: 4, overflow: 'hidden',
+            background: '#131B27', border: '1px solid rgba(201,151,44,0.2)', borderRadius: 12,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.5)', marginTop: 6, overflow: 'hidden',
           }}>
             {searchLoading && (
-              <div style={{ padding: '12px 16px', fontSize: 13, color: '#888888' }}>Buscando…</div>
+              <div style={{ padding: '14px 18px', fontSize: 13, color: 'rgba(160,143,130,0.6)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ animation: 'hoofbeat 0.8s ease infinite', display: 'inline-block' }}>🏇</span> Buscando…
+              </div>
             )}
             {!searchLoading && searchResults.length === 0 && searchQ && (
-              <div style={{ padding: '12px 16px', fontSize: 13, color: '#888888' }}>Sin resultados para "{searchQ}"</div>
+              <div style={{ padding: '14px 18px', fontSize: 13, color: 'rgba(160,143,130,0.5)' }}>Sin resultados para "{searchQ}"</div>
             )}
             {searchResults.map((h) => (
               <div key={h.id} onClick={() => handleSelectDBHorse(h)}
-                style={{ padding: '10px 16px', cursor: 'pointer', borderBottom: '1px solid #F5F5F5', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = '#F9FAFB')}
-                onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                className="ev-tr-hover"
+                style={{ padding: '12px 18px', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
               >
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#111111' }}>{h.name}</div>
-                  {h.sire && <div style={{ fontSize: 11, color: '#AAAAAA' }}>Padre: {h.sire}</div>}
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#F0EDE8' }}>🐎 {h.name}</div>
+                  {h.sire && <div style={{ fontSize: 11, color: 'rgba(201,151,44,0.5)', marginTop: 2 }}>Padre: {h.sire}</div>}
                 </div>
-                <div style={{ fontSize: 12, color: '#888888', textAlign: 'right' }}>
+                <div style={{ fontSize: 12, color: 'rgba(160,143,130,0.6)', textAlign: 'right' }}>
                   <div>{h.countryCode}</div>
-                  {h.birthYear && <div>{new Date().getFullYear() - h.birthYear}a · {h.birthYear}</div>}
+                  {h.birthYear && <div style={{ color: 'rgba(201,151,44,0.4)', marginTop: 2 }}>{new Date().getFullYear() - h.birthYear}a · {h.birthYear}</div>}
                 </div>
               </div>
             ))}
@@ -177,107 +181,84 @@ export default function ValuationPage() {
       </div>
 
       {!horse && !searchQ && (
-        <div style={{ padding: '48px 20px', textAlign: 'center', color: '#AAAAAA' }}>
-          <div style={{ fontSize: 36, marginBottom: 8 }}>🐎</div>
-          <div style={{ fontSize: 14 }}>Busca un caballo por nombre para comenzar la valoración</div>
+        <div style={{ padding: '72px 20px', textAlign: 'center' }}>
+          <div style={{ fontSize: 64, marginBottom: 14, filter: 'drop-shadow(0 0 16px rgba(201,151,44,0.3))' }}>🏇</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: '#F0EDE8', marginBottom: 6 }}>Busca un caballo para valorar</div>
+          <div style={{ fontSize: 13, color: 'rgba(160,143,130,0.5)' }}>Escribe el nombre arriba y selecciona de la base de datos ({1821}+ caballos)</div>
         </div>
       )}
 
       {horse && (
         <>
-          {/* Horse summary */}
-          <div style={{
-            background: '#FAFAFA', border: '1px solid #EBEBEB', borderRadius: 12,
-            padding: '16px 20px', marginBottom: 24, display: 'flex', gap: 24, flexWrap: 'wrap',
-          }}>
-            <Info label="Nombre" value={horse.name} />
-            <Info label="Edad" value={`${horse.age} años`} />
-            <Info label="Studbook" value={horse.studbook || '—'} />
-            <Info label="Padre" value={horse.sire || '—'} />
-            <Info label="País" value={horse.country || '—'} />
-            <Info label="Resultados" value={`${horseResults.length} cargados`} />
+          {/* Horse summary card */}
+          <div className="ev-gradient-card" style={{ marginBottom: 18 }}>
+            <div style={{ padding: '18px 22px' }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(201,151,44,0.5)', letterSpacing: '0.1em', marginBottom: 12, textTransform: 'uppercase' }}>📋 Ficha del caballo</div>
+              <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
+                <Info label="Nombre" value={horse.name} />
+                <Info label="Edad" value={horse.age > 0 ? `${horse.age} años` : '—'} />
+                <Info label="Studbook" value={horse.studbook || '—'} />
+                <Info label="Padre" value={horse.sire || '—'} />
+                <Info label="País" value={horse.country || '—'} />
+                <Info label="Resultados" value={`${horseResults.length} cargados`} />
+              </div>
+            </div>
           </div>
 
           {/* Manual results */}
-          <div style={{ background: '#111c11', border: '1px solid #2a3f2a', borderRadius: 12, padding: '20px', marginBottom: 24 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h3 style={{ margin: 0, fontSize: 14, color: '#c9a84c' }}>Agregar resultados manualmente</h3>
-              <button
-                onClick={addManualResult}
-                style={{ background: '#2a3f2a', color: '#4caf50', border: 'none', borderRadius: 8, padding: '6px 12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}
-              >
-                <Plus size={13} /> Resultado
-              </button>
-            </div>
-
-            {manualResults.length === 0 && (
-              <p style={{ color: '#888888', fontSize: 13, margin: 0 }}>
-                Sin resultados manuales. Presiona "+ Resultado" para agregar, o genera la valoración con los datos existentes.
-              </p>
-            )}
-
-            {manualResults.map((r, i) => (
-              <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 10, flexWrap: 'wrap', alignItems: 'flex-end' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  <span style={{ fontSize: 10, color: '#888888', fontWeight: 600 }}>EVENTO</span>
-                  <input
-                    value={r.eventName ?? ''}
-                    onChange={(e) => updateManualResult(i, { eventName: e.target.value })}
-                    placeholder="Nombre evento"
-                    style={inputStyle}
-                  />
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  <span style={{ fontSize: 10, color: '#888888', fontWeight: 600 }}>FECHA</span>
-                  <input
-                    type="date"
-                    value={r.eventDate ?? ''}
-                    onChange={(e) => updateManualResult(i, { eventDate: e.target.value })}
-                    style={inputStyle}
-                  />
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  <span style={{ fontSize: 10, color: '#888888', fontWeight: 600 }}>NIVEL</span>
-                  <select
-                    value={r.level ?? '1.20m'}
-                    onChange={(e) => updateManualResult(i, { level: e.target.value as JumpingLevel })}
-                    style={inputStyle}
-                  >
-                    {LEVELS.map((l) => <option key={l}>{l}</option>)}
-                  </select>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  <span style={{ fontSize: 10, color: '#888888', fontWeight: 600 }}>FAULTS</span>
-                  <input
-                    type="number" min={0} max={40}
-                    value={r.faults ?? 0}
-                    onChange={(e) => updateManualResult(i, { faults: +e.target.value })}
-                    style={{ ...inputStyle, width: 70 }}
-                  />
-                </div>
-                <button
-                  onClick={() => setManualResults((prev) => prev.filter((_, idx) => idx !== i))}
-                  style={{ background: 'none', border: 'none', color: '#CCCCCC', cursor: 'pointer', padding: '6px' }}
-                >
-                  <Minus size={14} />
+          <div className="ev-gradient-card" style={{ marginBottom: 18 }}>
+            <div style={{ padding: '20px 22px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                <h3 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: 'rgba(201,151,44,0.8)', letterSpacing: '0.04em' }}>
+                  📊 Agregar resultados manualmente
+                </h3>
+                <button onClick={addManualResult} className="ev-btn-ghost" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', fontSize: 12 }}>
+                  <Plus size={13} /> Resultado
                 </button>
               </div>
-            ))}
+
+              {manualResults.length === 0 && (
+                <p style={{ color: 'rgba(160,143,130,0.45)', fontSize: 13, margin: 0 }}>
+                  Sin resultados manuales. Presiona "+ Resultado" para agregar, o genera la valoración con los datos existentes.
+                </p>
+              )}
+
+              {manualResults.map((r, i) => (
+                <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 10, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+                  <FieldWrap label="EVENTO">
+                    <input value={r.eventName ?? ''} onChange={(e) => updateManualResult(i, { eventName: e.target.value })} placeholder="Nombre evento" className="ev-input" style={fieldStyle} />
+                  </FieldWrap>
+                  <FieldWrap label="FECHA">
+                    <input type="date" value={r.eventDate ?? ''} onChange={(e) => updateManualResult(i, { eventDate: e.target.value })} className="ev-input" style={fieldStyle} />
+                  </FieldWrap>
+                  <FieldWrap label="NIVEL">
+                    <select value={r.level ?? '1.20m'} onChange={(e) => updateManualResult(i, { level: e.target.value as JumpingLevel })} className="ev-input" style={fieldStyle}>
+                      {LEVELS.map((l) => <option key={l}>{l}</option>)}
+                    </select>
+                  </FieldWrap>
+                  <FieldWrap label="FAULTS">
+                    <input type="number" min={0} max={40} value={r.faults ?? 0} onChange={(e) => updateManualResult(i, { faults: +e.target.value })} className="ev-input" style={{ ...fieldStyle, width: 70 }} />
+                  </FieldWrap>
+                  <button onClick={() => setManualResults((prev) => prev.filter((_, idx) => idx !== i))} style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 8, cursor: 'pointer', color: '#EF4444', padding: '6px 8px', lineHeight: 0, marginBottom: 0 }}>
+                    <Minus size={13} />
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Generate button */}
-          <button
-            onClick={handleGenerateValuation}
-            disabled={loading}
-            style={{
-              width: '100%', background: loading ? '#F0F0F0' : '#111111',
-              color: loading ? '#AAAAAA' : '#FFFFFF', border: 'none', borderRadius: 12,
-              padding: '14px', fontWeight: 800, fontSize: 15, cursor: loading ? 'not-allowed' : 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 28,
-            }}
-          >
+          <button onClick={handleGenerateValuation} disabled={loading} className={loading ? '' : 'ev-btn-gold'} style={{
+            width: '100%',
+            background: loading ? 'rgba(201,151,44,0.1)' : undefined,
+            color: loading ? 'rgba(201,151,44,0.4)' : undefined,
+            border: loading ? '1px solid rgba(201,151,44,0.2)' : undefined,
+            borderRadius: 14, padding: '16px', fontWeight: 800, fontSize: 16,
+            cursor: loading ? 'not-allowed' : 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 28,
+          }}>
             <Zap size={18} />
-            {loading ? 'Calculando...' : 'Generar valoración AI'}
+            {loading ? 'Calculando valoración…' : '✨ Generar valoración AI'}
           </button>
 
           {/* Latest valuation */}
@@ -291,13 +272,19 @@ export default function ValuationPage() {
 function Info({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div style={{ fontSize: 10, color: '#888888', fontWeight: 600, letterSpacing: '0.06em' }}>{label}</div>
-      <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2, color: '#111111' }}>{value}</div>
+      <div style={{ fontSize: 10, color: 'rgba(201,151,44,0.45)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{label}</div>
+      <div style={{ fontSize: 14, fontWeight: 600, marginTop: 3, color: '#F0EDE8' }}>{value}</div>
     </div>
   );
 }
 
-const inputStyle: React.CSSProperties = {
-  background: '#FFFFFF', border: '1px solid #E8E8E8', color: '#111111',
-  borderRadius: 8, padding: '7px 10px', fontSize: 12, outline: 'none', fontFamily: 'inherit',
-};
+function FieldWrap({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <span style={{ fontSize: 10, color: 'rgba(201,151,44,0.5)', fontWeight: 700, letterSpacing: '0.06em' }}>{label}</span>
+      {children}
+    </div>
+  );
+}
+
+const fieldStyle: React.CSSProperties = { padding: '7px 10px', fontSize: 12 };

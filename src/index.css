@@ -1,25 +1,42 @@
 @import "tailwindcss";
 
 :root {
-  --c-bg:           #F7F4EF;
-  --c-surface:      #FFFFFF;
-  --c-surface-2:    #F0ECE6;
-  --c-elevated:     #FFFFFF;
-  --c-gold:         #A0731A;
-  --c-gold-light:   #C9922A;
-  --c-gold-muted:   rgba(160, 115, 26, 0.08);
-  --c-gold-border:  rgba(160, 115, 26, 0.2);
-  --c-text:         #1A1612;
-  --c-text-2:       #5C5349;
-  --c-text-3:       #9A9189;
-  --c-text-4:       #C4BDB5;
-  --c-border:       rgba(0, 0, 0, 0.07);
-  --c-border-2:     rgba(0, 0, 0, 0.11);
-  --c-green:        #16A34A;
-  --c-red:          #DC2626;
-  --c-blue:         #2563EB;
-  --c-purple:       #7C3AED;
-  --c-amber:        #D97706;
+  /* ── Dark equestrian palette ── */
+  --c-bg:           #080B12;
+  --c-surface:      #0E1219;
+  --c-surface-2:    #131820;
+  --c-elevated:     #1A2030;
+  --c-card:         #111722;
+
+  /* Gold scale */
+  --c-gold:         #C9972C;
+  --c-gold-light:   #F0B429;
+  --c-gold-bright:  #FFD166;
+  --c-gold-muted:   rgba(201, 151, 44, 0.10);
+  --c-gold-border:  rgba(201, 151, 44, 0.25);
+
+  /* Text */
+  --c-text:         #F0EDE8;
+  --c-text-2:       #A89F94;
+  --c-text-3:       #6B6560;
+  --c-text-4:       #3D3830;
+
+  /* Borders */
+  --c-border:       rgba(255,255,255,0.06);
+  --c-border-2:     rgba(255,255,255,0.10);
+
+  /* Status */
+  --c-green:        #22C55E;
+  --c-red:          #EF4444;
+  --c-blue:         #60A5FA;
+  --c-purple:       #A78BFA;
+  --c-amber:        #F59E0B;
+
+  /* Gradients */
+  --grad-gold:      linear-gradient(135deg, #C9972C 0%, #F0B429 50%, #E8860A 100%);
+  --grad-gold-soft: linear-gradient(135deg, rgba(201,151,44,0.15) 0%, rgba(240,180,41,0.05) 100%);
+  --grad-card:      linear-gradient(160deg, #141B28 0%, #0E1219 100%);
+  --grad-border:    linear-gradient(135deg, #C9972C, #F0B429, #6B4E1A, #C9972C);
 }
 
 * { box-sizing: border-box; }
@@ -34,44 +51,208 @@ body {
   min-height: 100vh;
 }
 
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #D6CFC6; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #BFB8AE; }
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--c-surface); }
+::-webkit-scrollbar-thumb { background: var(--c-gold-border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-gold); }
 
-/* Global transition for interactive elements only */
-a, button { transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease; }
+/* ── Transitions ── */
+a, button { transition: all 0.2s cubic-bezier(0.4,0,0.2,1); }
 
-/* Spin animation for refresh icon */
+/* ── Animations ── */
 @keyframes spin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
 
-/* Card hover lift */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,151,44,0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(201,151,44,0); }
+}
+
+@keyframes hoofbeat {
+  0%   { transform: translateX(0) scaleX(1); }
+  25%  { transform: translateX(3px) scaleX(1.02); }
+  50%  { transform: translateX(0) scaleX(1); }
+  75%  { transform: translateX(-3px) scaleX(0.98); }
+  100% { transform: translateX(0) scaleX(1); }
+}
+
+@keyframes gradient-border {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ── Card with gradient border ── */
+.ev-card {
+  background: var(--grad-card);
+  border-radius: 16px;
+  position: relative;
+  animation: fadeInUp 0.35s ease both;
+}
+
+.ev-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 17px;
+  background: linear-gradient(135deg, rgba(201,151,44,0.4) 0%, rgba(240,180,41,0.1) 40%, rgba(201,151,44,0.05) 60%, rgba(201,151,44,0.3) 100%);
+  background-size: 300% 300%;
+  animation: gradient-border 6s ease infinite;
+  z-index: -1;
+}
+
+.ev-card:hover::before {
+  background: linear-gradient(135deg, #C9972C 0%, #F0B429 40%, #6B4E1A 60%, #C9972C 100%);
+  background-size: 300% 300%;
+  animation: gradient-border 2s ease infinite;
+}
+
+/* ── Card hover lift ── */
 .ev-card-hover {
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease;
 }
 .ev-card-hover:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255,255,255,0.1) !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(201,151,44,0.08);
 }
 
-/* KPI card gold hover */
+/* ── KPI card ── */
 .ev-kpi-hover:hover {
-  border-color: var(--c-gold-border) !important;
-  box-shadow: 0 0 0 1px var(--c-gold-border), 0 8px 24px rgba(0,0,0,0.08);
+  box-shadow: 0 0 0 1px var(--c-gold-border), 0 12px 40px rgba(0,0,0,0.3), 0 0 20px rgba(201,151,44,0.1);
 }
 
-/* Table row hover */
-.ev-tr-hover:hover td {
-  background: rgba(0,0,0,0.018);
+/* ── Gradient button ── */
+.ev-btn-gold {
+  background: var(--grad-gold);
+  background-size: 200% auto;
+  border: none;
+  border-radius: 12px;
+  color: #1A0F00;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(201,151,44,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+  position: relative;
+  overflow: hidden;
+}
+.ev-btn-gold::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, transparent 50%);
+  border-radius: inherit;
+  pointer-events: none;
+}
+.ev-btn-gold:hover {
+  background-position: right center;
+  box-shadow: 0 6px 30px rgba(201,151,44,0.55), inset 0 1px 0 rgba(255,255,255,0.25);
+  transform: translateY(-2px) scale(1.02);
+}
+.ev-btn-gold:active {
+  transform: translateY(0) scale(0.99);
+  box-shadow: 0 2px 10px rgba(201,151,44,0.3);
 }
 
-/* Sidebar nav item hover */
+/* ── Ghost button ── */
+.ev-btn-ghost {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: var(--c-text-2);
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+}
+.ev-btn-ghost:hover {
+  background: rgba(201,151,44,0.08);
+  border-color: var(--c-gold-border);
+  color: var(--c-gold-light);
+  box-shadow: 0 0 20px rgba(201,151,44,0.1);
+}
+
+/* ── Table row ── */
+.ev-tr-hover:hover td,
+.ev-tr-hover:hover {
+  background: rgba(201,151,44,0.04) !important;
+}
+
+/* ── Nav item ── */
+.ev-nav-item {
+  transition: all 0.18s ease;
+}
 .ev-nav-item:hover {
-  color: #3D2E1A !important;
-  background: rgba(0,0,0,0.04) !important;
+  color: var(--c-gold-light) !important;
+  background: rgba(201,151,44,0.08) !important;
+}
+
+/* ── Shimmer text effect ── */
+.ev-shimmer {
+  background: linear-gradient(90deg, var(--c-gold) 0%, var(--c-gold-bright) 50%, var(--c-gold) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+
+/* ── Horse emoji animated ── */
+.ev-horse-icon {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+.ev-horse-icon:hover {
+  animation: hoofbeat 0.6s ease infinite;
+}
+
+/* ── Input dark ── */
+.ev-input {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  color: var(--c-text) !important;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+.ev-input:focus {
+  border-color: var(--c-gold-border) !important;
+  box-shadow: 0 0 0 3px rgba(201,151,44,0.12) !important;
+  background: rgba(201,151,44,0.04) !important;
+  outline: none;
+}
+.ev-input::placeholder { color: var(--c-text-3) !important; }
+
+/* ── Badge ── */
+.ev-badge {
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ── Gradient border card wrapper ── */
+.ev-gradient-card {
+  background: linear-gradient(135deg, rgba(201,151,44,0.5), rgba(240,180,41,0.2), rgba(107,78,26,0.3), rgba(201,151,44,0.4));
+  background-size: 300% 300%;
+  animation: gradient-border 8s ease infinite;
+  border-radius: 17px;
+  padding: 1px;
+}
+.ev-gradient-card > * {
+  background: var(--grad-card);
+  border-radius: 16px;
 }
 

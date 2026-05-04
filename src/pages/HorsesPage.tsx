@@ -14,6 +14,251 @@ const FLAG: Record<string, string> = {
 };
 const flag = (c?: string | null) => (c ? FLAG[c.toUpperCase()] ?? c : '—');
 const genderLabel = (g?: string | null) =>
+  g === 'stallion' ? '♂ Macho' : g === 'mare' ? '♀ Yegua' : g === 'gelding' ? '✂ Castrado' : g ?? '—';
+
+const GENDER_COLOR: Record<string, string> = {
+  stallion: 'rgba(96,165,250,0.15)',
+  mare:     'rgba(244,114,182,0.15)',
+  gelding:  'rgba(167,139,250,0.15)',
+};
+const GENDER_TEXT: Record<string, string> = {
+  stallion: '#60A5FA',
+  mare:     '#F472B6',
+  gelding:  '#A78BFA',
+};
+
+const LIMIT = 50;
+const COUNTRIES = ['','ARG','URU','CHI','BRA','MEX','BEL','NED','GER','FRA','GBR','IRL','USA','SUI','SWE','DEN','NOR','AUT','ITA','ESP','POR','AUS','QAT','SAU'];
+
+export default function HorsesPage() {
+  const [horses, setHorses]   = useState<DBHorse[]>([]);
+  const [total, setTotal]     = useState(0);
+  const [page, setPage]       = useState(1);
+  const [q, setQ]             = useState('');
+  const [country, setCountry] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState<string | null>(null);
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const load = useCallback(async (pg: number, query: string, ctry: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await serverListHorses({ page: pg, limit: LIMIT, q: query || undefined, country: ctry || undefined });
+      setHorses(res.data);
+      setTotal(res.total);
+    } catch {
+      setError('No se pudo conectar a la API.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { load(1, '', ''); }, [load]);
+
+  const handleSearch = (val: string) => {
+    setQ(val);
+    if (searchTimer.current) clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => { setPage(1); load(1, val, country); }, 300);
+  };
+
+  const handleCountry = (val: string) => {
+    setCountry(val);
+    setPage(1);
+    load(1, q, val);
+  };
+
+  const goPage = (pg: number) => {
+    setPage(pg);
+    load(pg, q, country);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const totalPages = Math.ceil(total / LIMIT);
+
+  return (
+    <div style={{ padding: '28px 32px', maxWidth: 1100, background: 'var(--c-bg)', minHeight: '100vh' }}>
+      {/* Header */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
+          <span style={{ fontSize: 28 }} className="ev-horse-icon">🐎</span>
+          <h1 style={{
+            margin: 0, fontSize: 26, fontWeight: 800, letterSpacing: '-0.5px',
+            background: 'linear-gradient(135deg, #F0EDE8 0%, #C9972C 100%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+          }}>Caballos</h1>
+        </div>
+        <p style={{ margin: '0', color: 'rgba(160,143,130,0.6)', fontSize: 14 }}>
+          {total > 0 ? `${total.toLocaleString('es-AR')} caballos en la base de datos` : loading ? 'Cargando…' : '0 caballos'}
+        </p>
+      </div>
+
+      {/* Search + filter bar */}
+      <div style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap' }}>
+        <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
+          <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'rgba(201,151,44,0.5)', pointerEvents: 'none' }} />
+          <input
+            value={q}
+            onChange={(e) => handleSearch(e.target.value)}
+            placeholder="Buscar por nombre…"
+            className="ev-input"
+            style={{
+              width: '100%', paddingLeft: 36, paddingRight: q ? 32 : 12,
+              paddingTop: 10, paddingBottom: 10,
+              fontSize: 14, boxSizing: 'border-box',
+            }}
+          />
+          {q && (
+            <button onClick={() => handleSearch('')} style={{
+              position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+              background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(160,143,130,0.5)', padding: 2,
+            }}>
+              <X size={14} />
+            </button>
+          )}
+        </div>
+        <select
+          value={country}
+          onChange={(e) => handleCountry(e.target.value)}
+          className="ev-input"
+          style={{ padding: '10px 14px', fontSize: 14, cursor: 'pointer' }}
+        >
+          <option value="">🌍 Todos los países</option>
+          {COUNTRIES.filter(Boolean).map((c) => <option key={c} value={c}>{flag(c)} {c}</option>)}
+        </select>
+      </div>
+
+      {/* Error */}
+      {error && (
+        <div style={{
+          padding: '14px 18px', background: 'rgba(239,68,68,0.1)',
+          border: '1px solid rgba(239,68,68,0.3)', borderRadius: 10,
+          color: '#EF4444', fontSize: 14, marginBottom: 20,
+        }}>
+          ⚠️ {error}
+        </div>
+      )}
+
+      {/* Table */}
+      <div className="ev-gradient-card">
+        <div style={{ borderRadius: 16, overflow: 'hidden' }}>
+          {/* Header row */}
+          <div style={{
+            display: 'grid', gridTemplateColumns: '2fr 80px 110px 1fr 1fr 1fr',
+            padding: '10px 18px',
+            background: 'rgba(0,0,0,0.3)',
+            borderBottom: '1px solid rgba(201,151,44,0.08)',
+          }}>
+            {['🐎 Nombre', '🌍 País', '⚧ Género', '🏇 Padre', '🐴 Madre', '📋 Studbook'].map((h) => (
+              <div key={h} style={{
+                fontSize: 10, fontWeight: 700, color: 'rgba(201,151,44,0.5)',
+                letterSpacing: '0.06em', textTransform: 'uppercase',
+              }}>{h}</div>
+            ))}
+          </div>
+
+          {loading ? (
+            <div style={{ padding: '48px 20px', textAlign: 'center', color: 'rgba(160,143,130,0.5)', fontSize: 14 }}>
+              <div style={{ fontSize: 36, marginBottom: 12, animation: 'hoofbeat 0.8s ease infinite' }}>🏇</div>
+              Cargando caballos…
+            </div>
+          ) : horses.length === 0 ? (
+            <div style={{ padding: '48px 20px', textAlign: 'center', color: 'rgba(160,143,130,0.5)' }}>
+              <div style={{ fontSize: 40, marginBottom: 8 }}>🐎</div>
+              No se encontraron caballos
+            </div>
+          ) : horses.map((h, i) => (
+            <div key={h.id} style={{
+              display: 'grid', gridTemplateColumns: '2fr 80px 110px 1fr 1fr 1fr',
+              padding: '12px 18px',
+              borderBottom: '1px solid rgba(255,255,255,0.03)',
+              transition: 'background 0.15s ease',
+              animation: `fadeInUp 0.3s ease ${i * 0.02}s both`,
+            }}
+              className="ev-tr-hover"
+            >
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: '#F0EDE8' }}>{h.name}</div>
+                {h.birthYear && (
+                  <div style={{ fontSize: 11, color: 'rgba(201,151,44,0.4)', marginTop: 1 }}>
+                    {new Date().getFullYear() - h.birthYear} años · {h.birthYear}
+                  </div>
+                )}
+              </div>
+              <div style={{ fontSize: 13, color: 'rgba(160,143,130,0.7)' }}>{flag(h.countryCode)} {h.countryCode || '—'}</div>
+              <div>
+                {h.gender ? (
+                  <span style={{
+                    background: GENDER_COLOR[h.gender] ?? 'rgba(160,143,130,0.1)',
+                    color: GENDER_TEXT[h.gender] ?? 'rgba(160,143,130,0.7)',
+                    borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 600,
+                  }}>
+                    {genderLabel(h.gender)}
+                  </span>
+                ) : <span style={{ color: 'rgba(160,143,130,0.4)', fontSize: 13 }}>—</span>}
+              </div>
+              <div style={{ fontSize: 13, color: 'rgba(160,143,130,0.65)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{h.sire || '—'}</div>
+              <div style={{ fontSize: 13, color: 'rgba(160,143,130,0.65)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{h.dam || '—'}</div>
+              <div style={{ fontSize: 12, color: 'rgba(201,151,44,0.5)', fontWeight: 500 }}>{h.studbook || '—'}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 20 }}>
+          <div style={{ fontSize: 13, color: 'rgba(160,143,130,0.5)' }}>
+            Página {page} de {totalPages} · {total.toLocaleString('es-AR')} total
+          </div>
+          <div style={{ display: 'flex', gap: 6 }}>
+            <PBtn disabled={page <= 1} onClick={() => goPage(page - 1)}><ChevronLeft size={16} /></PBtn>
+            {Array.from({ length: Math.min(7, totalPages) }, (_, i) => {
+              let pg: number;
+              if (totalPages <= 7) pg = i + 1;
+              else if (page <= 4) pg = i + 1;
+              else if (page >= totalPages - 3) pg = totalPages - 6 + i;
+              else pg = page - 3 + i;
+              return <PBtn key={pg} active={pg === page} onClick={() => goPage(pg)}>{pg}</PBtn>;
+            })}
+            <PBtn disabled={page >= totalPages} onClick={() => goPage(page + 1)}><ChevronRight size={16} /></PBtn>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PBtn({ children, onClick, disabled, active }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean; active?: boolean }) {
+  return (
+    <button onClick={onClick} disabled={disabled} className={active ? '' : 'ev-btn-ghost'} style={{
+      width: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center',
+      borderRadius: 8,
+      cursor: disabled ? 'default' : 'pointer',
+      background: active ? 'linear-gradient(135deg, #C9972C, #F0B429)' : undefined,
+      border: active ? 'none' : undefined,
+      color: active ? '#1A0F00' : disabled ? 'rgba(160,143,130,0.2)' : undefined,
+      fontWeight: active ? 700 : 500,
+      fontSize: 13,
+      opacity: disabled ? 0.4 : 1,
+      boxShadow: active ? '0 4px 12px rgba(201,151,44,0.35)' : undefined,
+    }}>
+      {children}
+    </button>
+  );
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+const FLAG: Record<string, string> = {
+  BEL: '🇧🇪', USA: '🇺🇸', FRA: '🇫🇷', NED: '🇳🇱', GER: '🇩🇪',
+  BRA: '🇧🇷', ESP: '🇪🇸', GBR: '🇬🇧', IRL: '🇮🇪', AUS: '🇦🇺',
+  SAU: '🇸🇦', SUI: '🇨🇭', SWE: '🇸🇪', DEN: '🇩🇰', NOR: '🇳🇴',
+  POL: '🇵🇱', CZE: '🇨🇿', AUT: '🇦🇹', ITA: '🇮🇹', POR: '🇵🇹',
+  ARG: '🇦🇷', URU: '🇺🇾', CHI: '🇨🇱', MEX: '🇲🇽', CAN: '🇨🇦',
+  CHN: '🇨🇳', QAT: '🇶🇦', UAE: '🇦🇪', JPN: '🇯🇵', RSA: '🇿🇦',
+};
+const flag = (c?: string | null) => (c ? FLAG[c.toUpperCase()] ?? c : '—');
+const genderLabel = (g?: string | null) =>
   g === 'stallion' ? 'Macho' : g === 'mare' ? 'Yegua' : g === 'gelding' ? 'Castrado' : g ?? '—';
 
 const LIMIT = 50;
