@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useAppStore } from '../store/appStore';
 import { calculateValuation } from '../services/valuation';
 import { ValuationCard } from '../components/ValuationCard';
@@ -13,7 +13,6 @@ export default function ValuationPage() {
   const [manualResults, setManualResults] = useState<Partial<CompetitionResult>[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // ── Horse search state ──────────────────────────────────────────────────────
   const [searchQ, setSearchQ] = useState('');
   const [searchResults, setSearchResults] = useState<DBHorse[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -35,7 +34,6 @@ export default function ValuationPage() {
   };
 
   const handleSelectDBHorse = (dbh: DBHorse) => {
-    // Convert DBHorse → Horse for valuation engine
     const horse: import('../types').Horse = {
       id: dbh.id,
       name: dbh.name,
@@ -80,8 +78,6 @@ export default function ValuationPage() {
   const handleGenerateValuation = async () => {
     if (!horse) return;
     setLoading(true);
-
-    // Save manual results
     const newResults: CompetitionResult[] = manualResults
       .filter((r) => r.eventName && r.eventDate && r.level)
       .map((r) => ({
@@ -96,9 +92,7 @@ export default function ValuationPage() {
         country: r.country ?? '',
         source: 'MANUAL',
       }));
-
     if (newResults.length > 0) addResults(newResults);
-
     const allResults = [...horseResults, ...newResults];
     const valuation = calculateValuation(horse, allResults);
     addValuation(valuation);
@@ -107,18 +101,13 @@ export default function ValuationPage() {
   };
 
   return (
-    <div style={{ padding: '28px 32px', maxWidth: 920, background: 'var(--c-bg)', minHeight: '100vh' }}>
+    <div style={{ padding: '32px', maxWidth: 920, background: '#F6F9FC', minHeight: '100vh' }}>
       {/* Header */}
-      <div style={{ marginBottom: 24 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-          <span style={{ fontSize: 28 }} className="ev-horse-icon">🏆</span>
-          <h1 style={{
-            margin: 0, fontSize: 26, fontWeight: 800, letterSpacing: '-0.5px',
-            background: 'linear-gradient(135deg, #F0EDE8 0%, #C9972C 100%)',
-            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-          }}>Valoración AI</h1>
-        </div>
-        <p style={{ margin: 0, color: 'rgba(160,143,130,0.6)', fontSize: 14 }}>
+      <div style={{ marginBottom: 28 }}>
+        <h1 style={{ margin: '0 0 4px', fontSize: 24, fontWeight: 800, color: '#0A2540', letterSpacing: '-0.4px' }}>
+          Valoración AI
+        </h1>
+        <p style={{ margin: 0, color: '#697386', fontSize: 14 }}>
           Genera una valoración basada en performance, linaje y mercado ecuestre.
         </p>
       </div>
@@ -126,53 +115,53 @@ export default function ValuationPage() {
       {/* Horse search */}
       <div style={{ marginBottom: 24, position: 'relative' }}>
         <div style={{ position: 'relative' }}>
-          <Search size={15} style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', color: 'rgba(201,151,44,0.5)', pointerEvents: 'none' }} />
+          <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#A3ACBA', pointerEvents: 'none' }} />
           <input
             value={searchQ}
             onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="🐎 Buscar caballo por nombre en la base de datos…"
+            placeholder="Buscar caballo por nombre en la base de datos…"
             className="ev-input"
-            style={{ width: '100%', paddingLeft: 38, paddingTop: 13, paddingBottom: 13, paddingRight: horse && !searchQ ? 180 : 14, fontSize: 14.5, boxSizing: 'border-box' }}
+            style={{ width: '100%', paddingLeft: 36, paddingTop: 12, paddingBottom: 12, paddingRight: horse && !searchQ ? 180 : 12, fontSize: 14, boxSizing: 'border-box' }}
           />
           {horse && !searchQ && (
             <div style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: '#F0B429', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: '#635BFF', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 ✓ {horse.name}
               </span>
-              <button onClick={() => { selectHorse(null); setSelectedDBHorse(null); }} style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 6, cursor: 'pointer', color: '#EF4444', padding: '2px 6px', lineHeight: 0 }}>
+              <button onClick={() => { selectHorse(null); setSelectedDBHorse(null); }} style={{ background: 'rgba(229,72,59,0.08)', border: '1px solid rgba(229,72,59,0.2)', borderRadius: 6, cursor: 'pointer', color: '#E5483B', padding: '2px 6px', lineHeight: 0 }}>
                 <X size={12} />
               </button>
             </div>
           )}
         </div>
 
-        {/* Dropdown results */}
+        {/* Dropdown */}
         {searchQ && (
           <div style={{
             position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50,
-            background: '#131B27', border: '1px solid rgba(201,151,44,0.2)', borderRadius: 12,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.5)', marginTop: 6, overflow: 'hidden',
+            background: '#FFFFFF', border: '1px solid #E3E8EF', borderRadius: 10,
+            boxShadow: '0 8px 24px rgba(0,0,0,0.10)', marginTop: 6, overflow: 'hidden',
           }}>
             {searchLoading && (
-              <div style={{ padding: '14px 18px', fontSize: 13, color: 'rgba(160,143,130,0.6)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ animation: 'hoofbeat 0.8s ease infinite', display: 'inline-block' }}>🏇</span> Buscando…
+              <div style={{ padding: '13px 18px', fontSize: 13, color: '#A3ACBA', display: 'flex', alignItems: 'center', gap: 8 }}>
+                🏇 Buscando…
               </div>
             )}
             {!searchLoading && searchResults.length === 0 && searchQ && (
-              <div style={{ padding: '14px 18px', fontSize: 13, color: 'rgba(160,143,130,0.5)' }}>Sin resultados para "{searchQ}"</div>
+              <div style={{ padding: '13px 18px', fontSize: 13, color: '#A3ACBA' }}>Sin resultados para "{searchQ}"</div>
             )}
             {searchResults.map((h) => (
               <div key={h.id} onClick={() => handleSelectDBHorse(h)}
                 className="ev-tr-hover"
-                style={{ padding: '12px 18px', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                style={{ padding: '11px 18px', cursor: 'pointer', borderBottom: '1px solid #F0F4F8', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
               >
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#F0EDE8' }}>🐎 {h.name}</div>
-                  {h.sire && <div style={{ fontSize: 11, color: 'rgba(201,151,44,0.5)', marginTop: 2 }}>Padre: {h.sire}</div>}
+                  <div style={{ fontSize: 13.5, fontWeight: 600, color: '#0A2540' }}>🐎 {h.name}</div>
+                  {h.sire && <div style={{ fontSize: 11, color: '#A3ACBA', marginTop: 2 }}>Padre: {h.sire}</div>}
                 </div>
-                <div style={{ fontSize: 12, color: 'rgba(160,143,130,0.6)', textAlign: 'right' }}>
+                <div style={{ fontSize: 12, color: '#697386', textAlign: 'right' }}>
                   <div>{h.countryCode}</div>
-                  {h.birthYear && <div style={{ color: 'rgba(201,151,44,0.4)', marginTop: 2 }}>{new Date().getFullYear() - h.birthYear}a · {h.birthYear}</div>}
+                  {h.birthYear && <div style={{ color: '#A3ACBA', marginTop: 2 }}>{new Date().getFullYear() - h.birthYear}a · {h.birthYear}</div>}
                 </div>
               </div>
             ))}
@@ -182,18 +171,18 @@ export default function ValuationPage() {
 
       {!horse && !searchQ && (
         <div style={{ padding: '72px 20px', textAlign: 'center' }}>
-          <div style={{ fontSize: 64, marginBottom: 14, filter: 'drop-shadow(0 0 16px rgba(201,151,44,0.3))' }}>🏇</div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: '#F0EDE8', marginBottom: 6 }}>Busca un caballo para valorar</div>
-          <div style={{ fontSize: 13, color: 'rgba(160,143,130,0.5)' }}>Escribe el nombre arriba y selecciona de la base de datos ({1821}+ caballos)</div>
+          <div style={{ fontSize: 56, marginBottom: 12, opacity: 0.15 }}>🏇</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: '#0A2540', marginBottom: 6 }}>Busca un caballo para valorar</div>
+          <div style={{ fontSize: 13, color: '#A3ACBA' }}>Escribe el nombre arriba y selecciona de la base de datos (1821+ caballos)</div>
         </div>
       )}
 
       {horse && (
         <>
           {/* Horse summary card */}
-          <div className="ev-gradient-card" style={{ marginBottom: 18 }}>
-            <div style={{ padding: '18px 22px' }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(201,151,44,0.5)', letterSpacing: '0.1em', marginBottom: 12, textTransform: 'uppercase' }}>📋 Ficha del caballo</div>
+          <div style={{ background: '#FFFFFF', border: '1px solid #E3E8EF', borderRadius: 12, marginBottom: 16, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+            <div style={{ padding: '16px 20px' }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: '#A3ACBA', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>Ficha del caballo</div>
               <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
                 <Info label="Nombre" value={horse.name} />
                 <Info label="Edad" value={horse.age > 0 ? `${horse.age} años` : '—'} />
@@ -206,11 +195,11 @@ export default function ValuationPage() {
           </div>
 
           {/* Manual results */}
-          <div className="ev-gradient-card" style={{ marginBottom: 18 }}>
-            <div style={{ padding: '20px 22px' }}>
+          <div style={{ background: '#FFFFFF', border: '1px solid #E3E8EF', borderRadius: 12, marginBottom: 16, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+            <div style={{ padding: '18px 20px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                <h3 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: 'rgba(201,151,44,0.8)', letterSpacing: '0.04em' }}>
-                  📊 Agregar resultados manualmente
+                <h3 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: '#0A2540' }}>
+                  Agregar resultados manualmente
                 </h3>
                 <button onClick={addManualResult} className="ev-btn-ghost" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', fontSize: 12 }}>
                   <Plus size={13} /> Resultado
@@ -218,7 +207,7 @@ export default function ValuationPage() {
               </div>
 
               {manualResults.length === 0 && (
-                <p style={{ color: 'rgba(160,143,130,0.45)', fontSize: 13, margin: 0 }}>
+                <p style={{ color: '#A3ACBA', fontSize: 13, margin: 0 }}>
                   Sin resultados manuales. Presiona "+ Resultado" para agregar, o genera la valoración con los datos existentes.
                 </p>
               )}
@@ -239,7 +228,7 @@ export default function ValuationPage() {
                   <FieldWrap label="FAULTS">
                     <input type="number" min={0} max={40} value={r.faults ?? 0} onChange={(e) => updateManualResult(i, { faults: +e.target.value })} className="ev-input" style={{ ...fieldStyle, width: 70 }} />
                   </FieldWrap>
-                  <button onClick={() => setManualResults((prev) => prev.filter((_, idx) => idx !== i))} style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 8, cursor: 'pointer', color: '#EF4444', padding: '6px 8px', lineHeight: 0, marginBottom: 0 }}>
+                  <button onClick={() => setManualResults((prev) => prev.filter((_, idx) => idx !== i))} style={{ background: 'rgba(229,72,59,0.06)', border: '1px solid rgba(229,72,59,0.18)', borderRadius: 8, cursor: 'pointer', color: '#E5483B', padding: '6px 8px', lineHeight: 0 }}>
                     <Minus size={13} />
                   </button>
                 </div>
@@ -248,20 +237,21 @@ export default function ValuationPage() {
           </div>
 
           {/* Generate button */}
-          <button onClick={handleGenerateValuation} disabled={loading} className={loading ? '' : 'ev-btn-gold'} style={{
-            width: '100%',
-            background: loading ? 'rgba(201,151,44,0.1)' : undefined,
-            color: loading ? 'rgba(201,151,44,0.4)' : undefined,
-            border: loading ? '1px solid rgba(201,151,44,0.2)' : undefined,
-            borderRadius: 14, padding: '16px', fontWeight: 800, fontSize: 16,
-            cursor: loading ? 'not-allowed' : 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 28,
-          }}>
+          <button
+            onClick={handleGenerateValuation}
+            disabled={loading}
+            className={loading ? '' : 'ev-btn-gold'}
+            style={{
+              width: '100%', borderRadius: 12, padding: '15px', fontWeight: 800, fontSize: 16,
+              cursor: loading ? 'not-allowed' : 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 28,
+              ...(loading ? { background: 'rgba(99,91,255,0.06)', color: '#A3ACBA', border: '1px solid #E3E8EF' } : {}),
+            }}
+          >
             <Zap size={18} />
-            {loading ? 'Calculando valoración…' : '✨ Generar valoración AI'}
+            {loading ? 'Calculando valoración…' : 'Generar valoración AI'}
           </button>
 
-          {/* Latest valuation */}
           {latestValuation && <ValuationCard valuation={latestValuation} />}
         </>
       )}
@@ -272,8 +262,8 @@ export default function ValuationPage() {
 function Info({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div style={{ fontSize: 10, color: 'rgba(201,151,44,0.45)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{label}</div>
-      <div style={{ fontSize: 14, fontWeight: 600, marginTop: 3, color: '#F0EDE8' }}>{value}</div>
+      <div style={{ fontSize: 10, color: '#A3ACBA', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{label}</div>
+      <div style={{ fontSize: 14, fontWeight: 600, marginTop: 3, color: '#0A2540' }}>{value}</div>
     </div>
   );
 }
@@ -281,7 +271,7 @@ function Info({ label, value }: { label: string; value: string }) {
 function FieldWrap({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      <span style={{ fontSize: 10, color: 'rgba(201,151,44,0.5)', fontWeight: 700, letterSpacing: '0.06em' }}>{label}</span>
+      <span style={{ fontSize: 10, color: '#A3ACBA', fontWeight: 700, letterSpacing: '0.06em' }}>{label}</span>
       {children}
     </div>
   );
