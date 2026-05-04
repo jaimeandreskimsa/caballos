@@ -1,24 +1,70 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAppStore } from '../store/appStore';
 import { calculateValuation } from '../services/valuation';
 import { ValuationCard } from '../components/ValuationCard';
-import { Zap, Plus, Minus } from 'lucide-react';
-import type { CompetitionResult, JumpingLevel } from '../types';
+import { Zap, Plus, Minus, Search, X } from 'lucide-react';
+import { serverSearchHorses } from '../services/serverDB';
+import type { CompetitionResult, JumpingLevel, DBHorse } from '../types';
 
 const LEVELS: JumpingLevel[] = ['1.00m','1.10m','1.20m','1.25m','1.30m','1.35m','1.40m','1.45m','1.50m','1.55m','1.60m','GP','GP*','GP**'];
 
 export default function ValuationPage() {
-  const { horses, results, valuations, selectedHorseId, selectHorse, addValuation, addResults } = useAppStore();
+  const { results, valuations, selectedHorseId, selectHorse, addValuation, addResults, addHorse } = useAppStore();
   const [manualResults, setManualResults] = useState<Partial<CompetitionResult>[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const horse = horses.find((h) => h.id === selectedHorseId) ?? horses[0];
+  // ── Horse search state ──────────────────────────────────────────────────────
+  const [searchQ, setSearchQ] = useState('');
+  const [searchResults, setSearchResults] = useState<DBHorse[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [selectedDBHorse, setSelectedDBHorse] = useState<DBHorse | null>(null);
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleSearchChange = (val: string) => {
+    setSearchQ(val);
+    if (!val.trim()) { setSearchResults([]); return; }
+    if (searchTimer.current) clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(async () => {
+      setSearchLoading(true);
+      try {
+        const res = await serverSearchHorses(val, 10);
+        setSearchResults(res);
+      } catch { setSearchResults([]); }
+      finally { setSearchLoading(false); }
+    }, 300);
+  };
+
+  const handleSelectDBHorse = (dbh: DBHorse) => {
+    // Convert DBHorse → Horse for valuation engine
+    const horse: import('../types').Horse = {
+      id: dbh.id,
+      name: dbh.name,
+      feiId: dbh.feiId,
+      age: dbh.birthYear ? new Date().getFullYear() - dbh.birthYear : 0,
+      breed: dbh.breed ?? dbh.studbook ?? '—',
+      studbook: dbh.studbook,
+      gender: dbh.gender ?? 'stallion',
+      color: dbh.color,
+      country: dbh.countryCode,
+      sire: dbh.sire,
+      dam: dbh.dam,
+      damSire: dbh.damSire,
+      rider: dbh.currentRider,
+      owner: dbh.owner,
+      createdAt: dbh.firstSeen,
+      updatedAt: dbh.lastUpdated,
+    };
+    addHorse(horse);
+    selectHorse(horse.id);
+    setSelectedDBHorse(dbh);
+    setSearchQ('');
+    setSearchResults([]);
+  };
+
+  const { horses } = useAppStore();
+  const horse = horses.find((h) => h.id === selectedHorseId) ?? null;
   const horseResults = results.filter((r) => r.horseId === horse?.id);
   const latestValuation = valuations.find((v) => v.horseId === horse?.id);
-
-  useEffect(() => {
-    if (horse && !selectedHorseId) selectHorse(horse.id);
-  }, [horse, selectedHorseId, selectHorse]);
 
   const addManualResult = () => {
     setManualResults((prev) => [
@@ -60,13 +106,8 @@ export default function ValuationPage() {
     setLoading(false);
   };
 
-  if (horses.length === 0) {
-    return (
-      <div style={{ padding: 32, textAlign: 'center', color: '#888888' }}>
-        <div style={{ fontSize: 40 }}>🐎</div>
-        <p>Primero agrega un caballo en la sección <strong style={{ color: '#111111' }}>Discover</strong>.</p>
-      </div>
-    );
+  if (false) {  // removed old empty-state guard — search handles it
+    return null;
   }
 
   return (
@@ -74,23 +115,73 @@ export default function ValuationPage() {
       <h1 style={{ margin: '0 0 6px', fontSize: 24, fontWeight: 800, color: '#111111', letterSpacing: '-0.5px' }}>Valoración</h1>
       <p style={{ margin: '0 0 28px', color: '#888888', fontSize: 14 }}>Genera una valoración AI basada en performance, linaje y mercado.</p>
 
-      {/* Horse selector */}
-      <div style={{ display: 'flex', gap: 10, marginBottom: 24, flexWrap: 'wrap' }}>
-        {horses.map((h) => (
-          <button
-            key={h.id}
-            onClick={() => selectHorse(h.id)}
+      {/* Horse search */}
+      <div style={{ marginBottom: 24, position: 'relative' }}>
+        <div style={{ position: 'relative' }}>
+          <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#AAAAAA', pointerEvents: 'none' }} />
+          <input
+            value={searchQ}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            placeholder="Buscar caballo por nombre…"
             style={{
-              background: selectedHorseId === h.id || (!selectedHorseId && h.id === horse?.id) ? '#111111' : '#FFFFFF',
-              color: selectedHorseId === h.id || (!selectedHorseId && h.id === horse?.id) ? '#FFFFFF' : '#888888',
-              border: '1px solid #E8E8E8', borderRadius: 20,
-              padding: '8px 16px', fontWeight: 600, fontSize: 13, cursor: 'pointer',
+              width: '100%', paddingLeft: 36, paddingRight: horse ? 200 : 12,
+              paddingTop: 12, paddingBottom: 12,
+              border: '1px solid #E0E0E0', borderRadius: 10,
+              fontSize: 14, color: '#111111', background: '#FFFFFF',
+              outline: 'none', boxSizing: 'border-box',
             }}
-          >
-            {h.name} · {h.age}y
-          </button>
-        ))}
+          />
+          {horse && !searchQ && (
+            <div style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 13, fontWeight: 600, color: '#111111', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {horse.name}
+              </span>
+              <button onClick={() => { selectHorse(null); setSelectedDBHorse(null); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#AAAAAA', padding: 2 }}>
+                <X size={14} />
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Dropdown results */}
+        {searchQ && (
+          <div style={{
+            position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50,
+            background: '#FFFFFF', border: '1px solid #E0E0E0', borderRadius: 10,
+            boxShadow: '0 4px 16px rgba(0,0,0,0.08)', marginTop: 4, overflow: 'hidden',
+          }}>
+            {searchLoading && (
+              <div style={{ padding: '12px 16px', fontSize: 13, color: '#888888' }}>Buscando…</div>
+            )}
+            {!searchLoading && searchResults.length === 0 && searchQ && (
+              <div style={{ padding: '12px 16px', fontSize: 13, color: '#888888' }}>Sin resultados para "{searchQ}"</div>
+            )}
+            {searchResults.map((h) => (
+              <div key={h.id} onClick={() => handleSelectDBHorse(h)}
+                style={{ padding: '10px 16px', cursor: 'pointer', borderBottom: '1px solid #F5F5F5', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = '#F9FAFB')}
+                onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+              >
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#111111' }}>{h.name}</div>
+                  {h.sire && <div style={{ fontSize: 11, color: '#AAAAAA' }}>Padre: {h.sire}</div>}
+                </div>
+                <div style={{ fontSize: 12, color: '#888888', textAlign: 'right' }}>
+                  <div>{h.countryCode}</div>
+                  {h.birthYear && <div>{new Date().getFullYear() - h.birthYear}a · {h.birthYear}</div>}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
+      {!horse && !searchQ && (
+        <div style={{ padding: '48px 20px', textAlign: 'center', color: '#AAAAAA' }}>
+          <div style={{ fontSize: 36, marginBottom: 8 }}>🐎</div>
+          <div style={{ fontSize: 14 }}>Busca un caballo por nombre para comenzar la valoración</div>
+        </div>
+      )}
 
       {horse && (
         <>

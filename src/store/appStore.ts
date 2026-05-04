@@ -45,7 +45,11 @@ export const useAppStore = create<AppState>()(
 
       login: () => set({ isAuthenticated: true }),
       logout: () => set({ isAuthenticated: false }),
-      addHorse: (horse) => set((s) => ({ horses: [...s.horses, horse] })),
+      addHorse: (horse) => set((s) => ({
+        horses: s.horses.some((h) => h.id === horse.id)
+          ? s.horses.map((h) => (h.id === horse.id ? { ...h, ...horse } : h))
+          : [...s.horses, horse],
+      })),
       updateHorse: (id, data) =>
         set((s) => ({ horses: s.horses.map((h) => (h.id === id ? { ...h, ...data } : h)) })),
       deleteHorse: (id) =>
@@ -69,7 +73,19 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'equivalue-storage',
-      version: 1,
+      version: 2,
+      migrate: (persisted: unknown, version: number) => {
+        const s = persisted as AppState;
+        if (version < 2 && s.horses) {
+          const seen = new Set<string>();
+          s.horses = s.horses.filter((h) => {
+            if (seen.has(h.id)) return false;
+            seen.add(h.id);
+            return true;
+          });
+        }
+        return s;
+      },
       partialize: (state) => ({
         isAuthenticated: state.isAuthenticated,
         horses: state.horses,
